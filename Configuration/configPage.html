@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>BtttrTags Configuration</title>
+</head>
+<body>
+    <div data-role="page" class="page type-interior pluginConfigurationPage" id="btttrTagsConfigPage">
+        <div data-role="content">
+            <div class="content-primary">
+                <h2>BtttrTags - Dynamic Poster Overlays</h2>
+                <p>Adds btttr.cc style hanging tags to your posters across all devices while keeping your original posters safe.</p>
+
+                <form id="btttrTagsConfigForm">
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkEnableTrending" name="EnableTrending" />
+                            <span>Enable Trending Tags (#X Today / Trending)</span>
+                        </label>
+                        <div class="fieldDescription">Fetches real-time trending ranks from Cinemeta.</div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkEnableImdb250" name="EnableImdbTop250" />
+                            <span>Enable IMDb Top 250 (Golden Amber Tab)</span>
+                        </label>
+                        <div class="fieldDescription">Displays iconic amber tags like IMDb #1 for top-rated movies and shows. Movies and shows are ranked separately.</div>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkEnableNewMovies" name="EnableNewMovies" />
+                            <span>Enable New Movie / New Series</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="txtNewDays">New Release Threshold (Days):</label>
+                        <input is="emby-input" type="number" id="txtNewDays" name="NewMovieDaysThreshold" min="1" max="180" class="emby-input" />
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkEnableJustAdded" name="EnableJustAdded" />
+                            <span>Enable Just Added (Library Additions)</span>
+                        </label>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="txtAddedDays">Just Added Threshold (Days):</label>
+                        <input is="emby-input" type="number" id="txtAddedDays" name="JustAddedDaysThreshold" min="1" max="90" class="emby-input" />
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="chkEnableTvStatus" name="EnableTvSeriesStatus" />
+                            <span>Enable TV Status Tags (Binge Ready / Returning Series)</span>
+                        </label>
+                    </div>
+
+                    <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                        <span>Save Configuration</span>
+                    </button>
+                </form>
+
+                <hr style="margin: 30px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);" />
+
+                <h3>Original Posters Safety</h3>
+                <p>All original posters are backed up in Jellyfin's data directory, under BtttrTagsBackups, before any overlay is applied.</p>
+                <button is="emby-button" type="button" id="btnRestoreAll" class="raised button-cancel block emby-button" style="background: #be123c;">
+                    <span>Restore All Original Clean Posters</span>
+                </button>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var BtttrTagsConfig = {
+                pluginId: '3f82b7c1-d419-4a92-95e3-6a9b4e7a2b10'
+            };
+
+            document.getElementById('btttrTagsConfigPage').addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(BtttrTagsConfig.pluginId).then(function (config) {
+                    document.getElementById('chkEnableTrending').checked = config.EnableTrending;
+                    document.getElementById('chkEnableImdb250').checked = config.EnableImdbTop250;
+                    document.getElementById('chkEnableNewMovies').checked = config.EnableNewMovies;
+                    document.getElementById('txtNewDays').value = config.NewMovieDaysThreshold || 90;
+                    document.getElementById('chkEnableJustAdded').checked = config.EnableJustAdded;
+                    document.getElementById('txtAddedDays').value = config.JustAddedDaysThreshold || 30;
+                    document.getElementById('chkEnableTvStatus').checked = config.EnableTvSeriesStatus;
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
+            document.getElementById('btttrTagsConfigForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(BtttrTagsConfig.pluginId).then(function (config) {
+                    config.EnableTrending = document.getElementById('chkEnableTrending').checked;
+                    config.EnableImdbTop250 = document.getElementById('chkEnableImdb250').checked;
+                    config.EnableNewMovies = document.getElementById('chkEnableNewMovies').checked;
+                    config.NewMovieDaysThreshold = parseInt(document.getElementById('txtNewDays').value, 10) || 90;
+                    config.EnableJustAdded = document.getElementById('chkEnableJustAdded').checked;
+                    config.JustAddedDaysThreshold = parseInt(document.getElementById('txtAddedDays').value, 10) || 30;
+                    config.EnableTvSeriesStatus = document.getElementById('chkEnableTvStatus').checked;
+
+                    ApiClient.updatePluginConfiguration(BtttrTagsConfig.pluginId, config).then(function (result) {
+                        Dashboard.processPluginConfigurationUpdateResult(result);
+                    });
+                });
+            });
+
+            document.getElementById('btnRestoreAll').addEventListener('click', function () {
+                if (confirm('Restore all posters to their original clean versions from backup?')) {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.ajax({
+                        type: 'POST',
+                        url: ApiClient.getUrl('BtttrTags/RestoreAll')
+                    }).then(function () {
+                        Dashboard.hideLoadingMsg();
+                        Dashboard.alert('Original posters restored successfully!');
+                    }).catch(function (err) {
+                        Dashboard.hideLoadingMsg();
+                        if (err && err.status === 409) {
+                            Dashboard.alert('A poster update is already running. Try again when it finishes.');
+                        } else {
+                            Dashboard.alert('Could not restore posters: ' + ((err && (err.statusText || err.message)) || 'Unknown error'));
+                        }
+                    });
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

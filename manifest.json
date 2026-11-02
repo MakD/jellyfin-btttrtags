@@ -1,0 +1,21 @@
+[
+  {
+    "guid": "3f82b7c1-d419-4a92-95e3-6a9b4e7a2b10",
+    "name": "BtttrTags",
+    "description": "Adds btttr.cc style hanging tags to original movie & series posters across all clients while keeping original artwork safe.",
+    "overview": "Adds btttr.cc style hanging tags to original movie & series posters.",
+    "owner": "M0RPHi",
+    "category": "MoviesAndShows",
+    "imageUrl": "https://raw.githubusercontent.com/MakD/jellyfin-btttrtags/main/thumb.png",
+    "versions": [
+      {
+        "version": "1.0.0.0",
+        "changelog": "- First public release\n- Hanging poster tags for IMDb Top 250 movies and shows, Trending, New Movie, New Series, Just Added, Returning Series and Binge Ready\n- Tag colors matched to each poster's artwork, with a gold tag for IMDb Top 250\n- Original posters backed up before tagging, and restored when a tag no longer applies\n- Runs daily at 04:30, and keeps the last good lists if a download fails\n- Restore All Original Posters button for administrators",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/MakD/jellyfin-btttrtags/releases/download/v1.0.0.0/BtttrTags.zip",
+        "checksum": "8381e6a806cf8ef2f0dd8c6be69a5848",
+        "timestamp": "2026-11-02T07:41:34Z"
+      }
+    ]
+  }
+]

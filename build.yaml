@@ -1,0 +1,17 @@
+---
+name: "BtttrTags"
+guid: "3f82b7c1-d419-4a92-95e3-6a9b4e7a2b10"
+version: "1.0.0.0"
+targetAbi: "12.0.0.0"
+framework: "net10.0"
+overview: "Adds btttr.cc style hanging tags to original movie & series posters across all clients while keeping original artwork safe."
+description: >
+  BtttrTags dynamically adds btttr.cc hanging tags (Trending, IMDb Top 250, New Movie, Just Added,
+  Binge Ready) to your library posters across all TV and mobile clients. It extracts dynamic
+  poster-matching accent colors and safely backs up your original posters before rendering.
+category: "MoviesAndShows"
+owner: "M0RPHi"
+artifacts:
+- "Jellyfin.Plugin.BtttrTags.dll"
+changelog: >
+  First public release.
