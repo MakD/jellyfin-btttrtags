@@ -2,6 +2,12 @@
 
 ![BtttrTags](thumb.png)
 
+<div align="center">
+  <a href="https://github.com/MakD/jellyfin-btttrtags/releases/latest"><img src="https://img.shields.io/github/v/release/MakD/jellyfin-btttrtags?style=for-the-badge&logo=github&logoColor=ffffff&labelColor=000000&color=333446"/></a>
+  <img src="https://img.shields.io/badge/jellyfin-12.0+-blue?style=for-the-badge&logo=jellyfin&logoColor=ffffff&labelColor=000000&color=333446"/>
+  <a href="https://github.com/MakD/jellyfin-btttrtags/releases"><img src="https://img.shields.io/github/downloads/MakD/jellyfin-btttrtags/total?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTk2MCA5NjAgOTYwIiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTIwMC0xNjBoNTYwcTE3IDAgMjguNSAxMS41VDgwMC0xMjBxMCAxNy0xMS41IDI4LjVUNzYwLTgwSDIwMHEtMTcgMC0yOC41LTExLjVUMTYwLTEyMHEwLTE3IDExLjUtMjguNVQyMDAtMTYwWm0yODAtMTA1cS05IDAtMTcuNS00VDQ0OC0yODFMMjUwLTUzNXEtMTUtMjAtNC00Mi41dDM2LTIyLjVoNzh2LTI0MHEwLTE3IDExLjUtMjguNVQ0MDAtODgwaDE2MHExNyAwIDI4LjUgMTEuNVQ2MDAtODQwdjI0MGg3OHEyNSAwIDM2IDIyLjV0LTQgNDIuNUw1MTItMjgxcS02IDgtMTQuNSAxMnQtMTcuNSA0WiIvPjwvc3ZnPg==&logoColor=ffffff&labelColor=000000&color=333446"/></a>
+</div>
+
 BtttrTags is a Jellyfin server plugin that adds [btttr.cc](https://btttr.cc)-style hanging tags to the posters of your movies and series. The tags are drawn into the poster image on the server, so every client shows them without any client-side changes: web, Android TV, Apple TV, Fire TV, Roku, iOS and Android.
 
 Your original posters are backed up before a tag is added, and restored automatically when a tag no longer applies.
