@@ -251,7 +251,7 @@ public class TagResolver
             }
         }
 
-        if (config.EnableTvSeriesStatus && item is Series series)
+        if (item is Series series && (config.EnableReturningSeries || config.EnableBingeReady))
         {
             var statusStr = series.Status?.ToString() ?? "";
             bool isContinuing = series.Status == SeriesStatus.Continuing
@@ -259,16 +259,21 @@ public class TagResolver
 
             if (isContinuing)
             {
-                return new TagResult { Text = "Returning Series", IsGold = false };
+                if (config.EnableReturningSeries)
+                {
+                    return new TagResult { Text = "Returning Series", IsGold = false };
+                }
             }
-
-            bool isEnded = series.Status == SeriesStatus.Ended
-                || series.EndDate.HasValue
-                || statusStr.Contains("Ended", StringComparison.OrdinalIgnoreCase);
-
-            if (isEnded)
+            else
             {
-                return new TagResult { Text = "Binge Ready", IsGold = false };
+                bool isEnded = series.Status == SeriesStatus.Ended
+                    || series.EndDate.HasValue
+                    || statusStr.Contains("Ended", StringComparison.OrdinalIgnoreCase);
+
+                if (isEnded && config.EnableBingeReady)
+                {
+                    return new TagResult { Text = "Binge Ready", IsGold = false };
+                }
             }
         }
 

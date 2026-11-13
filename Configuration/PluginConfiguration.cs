@@ -14,5 +14,7 @@ public class PluginConfiguration : BasePluginConfiguration
 
     public bool EnableImdbTop250 { get; set; } = true;
 
-    public bool EnableTvSeriesStatus { get; set; } = true;
+    public bool EnableReturningSeries { get; set; } = true;
+
+    public bool EnableBingeReady { get; set; } = true;
 }
