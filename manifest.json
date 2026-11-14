@@ -9,6 +9,14 @@
     "imageUrl": "https://raw.githubusercontent.com/MakD/jellyfin-btttrtags/main/thumb.png",
     "versions": [
       {
+        "version": "1.0.1.0",
+        "changelog": "- Award tags from Wikidata: Oscars, Emmys, Cannes, Venice, Berlin, BAFTAs, Golden Globes, National Film Awards and Filmfare. Winners get a gold tag, nominees a tag in the poster's colour\n- Every tag has its own on/off switch, including separate New Movie and New Series, #N Today and Trending, and award winners and nominees\n- Trending, New and Just Added now come before IMDb Top 250 and award tags, so a permanent tag never hides them\n- Tags use Inter SemiBold at one size relative to the poster, with the same baseline for every tag\n- Tagged posters are redrawn once in the new style\n- After updating, review the settings page: the tag switches were reorganised and all start switched on",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/MakD/jellyfin-btttrtags/releases/download/v1.0.1.0/BtttrTags.zip",
+        "checksum": "7168df991cccbb13c7d8a10959d23d3c",
+        "timestamp": "2026-11-14T07:43:48Z"
+      },
+      {
         "version": "1.0.0.0",
         "changelog": "- First public release\n- Hanging poster tags for IMDb Top 250 movies and shows, Trending, New Movie, New Series, Just Added, Returning Series and Binge Ready\n- Tag colors matched to each poster's artwork, with a gold tag for IMDb Top 250\n- Original posters backed up before tagging, and restored when a tag no longer applies\n- Runs daily at 04:30, and keeps the last good lists if a download fails\n- Restore All Original Posters button for administrators",
         "targetAbi": "12.0.0.0",

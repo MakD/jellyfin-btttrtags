@@ -10,6 +10,28 @@
       class="page type-interior pluginConfigurationPage"
       id="btttrTagsConfigPage"
     >
+      <style>
+        #btttrTagsConfigPage .tagGroup {
+          margin: 2em 0 1em;
+        }
+        #btttrTagsConfigPage .tagGroup h3 {
+          margin-bottom: 0.3em;
+        }
+        #btttrTagsConfigPage .awardGrid {
+          display: grid;
+          grid-template-columns: minmax(9em, auto) 1fr 1fr;
+          gap: 0.2em 1.5em;
+          align-items: center;
+          margin-top: 1em;
+        }
+        #btttrTagsConfigPage .awardGrid .checkboxContainer {
+          margin-bottom: 0;
+        }
+        #btttrTagsConfigPage .awardName {
+          opacity: 0.8;
+        }
+      </style>
+
       <div data-role="content">
         <div class="content-primary">
           <h2>BtttrTags - Dynamic Poster Overlays</h2>
@@ -17,115 +39,149 @@
             Adds btttr.cc style hanging tags to your posters across all devices
             while keeping your original posters safe.
           </p>
+          <p class="fieldDescription">
+            Each title gets one tag. The groups below are in priority order:
+            when a title qualifies for several tags, the one listed first is
+            shown. Turn off any tag you don't want.
+          </p>
 
           <form id="btttrTagsConfigForm">
-            <div class="checkboxContainer checkboxContainer-withDescription">
-              <label>
-                <input
-                  is="emby-checkbox"
-                  type="checkbox"
-                  id="chkEnableTrending"
-                  name="EnableTrending"
-                />
-                <span>Enable Trending Tags (#X Today / Trending)</span>
-              </label>
-              <div class="fieldDescription">
-                Fetches real-time trending ranks from Cinemeta.
+            <div class="tagGroup">
+              <h3>Trending</h3>
+              <div class="checkboxContainer checkboxContainer-withDescription">
+                <label>
+                  <input is="emby-checkbox" type="checkbox" data-setting="EnableTrendingRank" />
+                  <span>#N Today</span>
+                </label>
+                <div class="fieldDescription">
+                  Titles ranked 1 to 25 in today's Cinemeta trending chart.
+                </div>
+              </div>
+              <div class="checkboxContainer checkboxContainer-withDescription">
+                <label>
+                  <input is="emby-checkbox" type="checkbox" data-setting="EnableTrending" />
+                  <span>Trending</span>
+                </label>
+                <div class="fieldDescription">
+                  The rest of the chart. When #N Today is off, the top 25 show
+                  Trending too.
+                </div>
               </div>
             </div>
 
-            <div class="checkboxContainer checkboxContainer-withDescription">
-              <label>
-                <input
-                  is="emby-checkbox"
-                  type="checkbox"
-                  id="chkEnableImdb250"
-                  name="EnableImdbTop250"
-                />
-                <span>Enable IMDb Top 250 (Golden Amber Tab)</span>
-              </label>
-              <div class="fieldDescription">
-                Displays iconic amber tags like IMDb #1 for top-rated movies and
-                shows. Movies and shows are ranked separately.
+            <div class="tagGroup">
+              <h3>New Releases</h3>
+              <div class="checkboxContainer">
+                <label>
+                  <input is="emby-checkbox" type="checkbox" data-setting="EnableNewMovie" />
+                  <span>New Movie</span>
+                </label>
+              </div>
+              <div class="checkboxContainer">
+                <label>
+                  <input is="emby-checkbox" type="checkbox" data-setting="EnableNewSeries" />
+                  <span>New Series</span>
+                </label>
+              </div>
+              <div class="inputContainer">
+                <label class="inputLabel inputLabelUnfocused" for="txtNewDays">New Release Threshold (Days):</label>
+                <input is="emby-input" type="number" id="txtNewDays" min="1" max="180" class="emby-input" />
+                <div class="fieldDescription">
+                  Released within this many days, or due out within the next 30.
+                </div>
               </div>
             </div>
 
-            <div class="checkboxContainer checkboxContainer-withDescription">
-              <label>
-                <input
-                  is="emby-checkbox"
-                  type="checkbox"
-                  id="chkEnableNewMovies"
-                  name="EnableNewMovies"
-                />
-                <span>Enable New Movie / New Series</span>
-              </label>
+            <div class="tagGroup">
+              <h3>Library</h3>
+              <div class="checkboxContainer">
+                <label>
+                  <input is="emby-checkbox" type="checkbox" data-setting="EnableJustAdded" />
+                  <span>Just Added</span>
+                </label>
+              </div>
+              <div class="inputContainer">
+                <label class="inputLabel inputLabelUnfocused" for="txtAddedDays">Just Added Threshold (Days):</label>
+                <input is="emby-input" type="number" id="txtAddedDays" min="1" max="90" class="emby-input" />
+              </div>
             </div>
 
-            <div class="inputContainer">
-              <label class="inputLabel inputLabelUnfocused" for="txtNewDays"
-                >New Release Threshold (Days):</label
-              >
-              <input
-                is="emby-input"
-                type="number"
-                id="txtNewDays"
-                name="NewMovieDaysThreshold"
-                min="1"
-                max="180"
-                class="emby-input"
-              />
+            <div class="tagGroup">
+              <h3>IMDb Top 250</h3>
+              <div class="checkboxContainer checkboxContainer-withDescription">
+                <label>
+                  <input is="emby-checkbox" type="checkbox" data-setting="EnableImdbTop250" />
+                  <span>IMDb #N</span>
+                </label>
+                <div class="fieldDescription">
+                  Gold tag with the title's rank. Movies and series are ranked
+                  separately.
+                </div>
+              </div>
             </div>
 
-            <div class="checkboxContainer checkboxContainer-withDescription">
-              <label>
-                <input
-                  is="emby-checkbox"
-                  type="checkbox"
-                  id="chkEnableJustAdded"
-                  name="EnableJustAdded"
-                />
-                <span>Enable Just Added (Library Additions)</span>
-              </label>
+            <div class="tagGroup">
+              <h3>Awards</h3>
+              <div class="fieldDescription">
+                Award data comes from Wikidata and is refreshed weekly. Any win
+                outranks any nomination. Between two wins, or two nominations,
+                the award listed higher here is shown. Winners get a gold tag.
+              </div>
+              <div class="awardGrid">
+                <span class="awardName">Oscars</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableOscarWinner" /><span>Oscar Winner</span></label></div>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableOscarNominee" /><span>Oscar Nominee</span></label></div>
+
+                <span class="awardName">Emmys</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableEmmyWinner" /><span>Emmy Winner</span></label></div>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableEmmyNominee" /><span>Emmy Nominee</span></label></div>
+
+                <span class="awardName">Cannes</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnablePalmeDor" /><span>Palme d'Or</span></label></div>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableCannesNominee" /><span>Cannes Nominee</span></label></div>
+
+                <span class="awardName">Venice</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableGoldenLion" /><span>Golden Lion</span></label></div>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableVeniceNominee" /><span>Venice Nominee</span></label></div>
+
+                <span class="awardName">Berlin</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableGoldenBear" /><span>Golden Bear</span></label></div>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableBerlinNominee" /><span>Berlin Nominee</span></label></div>
+
+                <span class="awardName">BAFTAs</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableBaftaWinner" /><span>BAFTA Winner</span></label></div>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableBaftaNominee" /><span>BAFTA Nominee</span></label></div>
+
+                <span class="awardName">Golden Globes</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableGlobeWinner" /><span>Globe Winner</span></label></div>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableGlobeNominee" /><span>Globe Nominee</span></label></div>
+
+                <span class="awardName">National Film Awards</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableNationalAward" /><span>National Award</span></label></div>
+                <span class="fieldDescription">Winners only</span>
+
+                <span class="awardName">Filmfare</span>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableFilmfareWinner" /><span>Filmfare Winner</span></label></div>
+                <div class="checkboxContainer"><label><input is="emby-checkbox" type="checkbox" data-setting="EnableFilmfareNominee" /><span>Filmfare Nominee</span></label></div>
+              </div>
             </div>
 
-            <div class="inputContainer">
-              <label class="inputLabel inputLabelUnfocused" for="txtAddedDays"
-                >Just Added Threshold (Days):</label
-              >
-              <input
-                is="emby-input"
-                type="number"
-                id="txtAddedDays"
-                name="JustAddedDaysThreshold"
-                min="1"
-                max="90"
-                class="emby-input"
-              />
-            </div>
-
-            <div class="checkboxContainer checkboxContainer-withDescription">
-              <label>
-                <input
-                  is="emby-checkbox"
-                  type="checkbox"
-                  id="chkEnableReturningSeries"
-                  name="EnableReturningSeries"
-                />
-                <span>Enable Returning Series (series still airing)</span>
-              </label>
-            </div>
-
-            <div class="checkboxContainer checkboxContainer-withDescription">
-              <label>
-                <input
-                  is="emby-checkbox"
-                  type="checkbox"
-                  id="chkEnableBingeReady"
-                  name="EnableBingeReady"
-                />
-                <span>Enable Binge Ready (series that have ended)</span>
-              </label>
+            <div class="tagGroup">
+              <h3>Series Status</h3>
+              <div class="checkboxContainer checkboxContainer-withDescription">
+                <label>
+                  <input is="emby-checkbox" type="checkbox" data-setting="EnableReturningSeries" />
+                  <span>Returning Series</span>
+                </label>
+                <div class="fieldDescription">Series that are still airing.</div>
+              </div>
+              <div class="checkboxContainer checkboxContainer-withDescription">
+                <label>
+                  <input is="emby-checkbox" type="checkbox" data-setting="EnableBingeReady" />
+                  <span>Binge Ready</span>
+                </label>
+                <div class="fieldDescription">Series that have ended.</div>
+              </div>
             </div>
 
             <button
@@ -167,28 +223,23 @@
           pluginId: "3f82b7c1-d419-4a92-95e3-6a9b4e7a2b10",
         };
 
+        function tagCheckboxes() {
+          return document.querySelectorAll("#btttrTagsConfigForm [data-setting]");
+        }
+
         document
           .getElementById("btttrTagsConfigPage")
           .addEventListener("pageshow", function () {
             Dashboard.showLoadingMsg();
             ApiClient.getPluginConfiguration(BtttrTagsConfig.pluginId).then(
               function (config) {
-                document.getElementById("chkEnableTrending").checked =
-                  config.EnableTrending;
-                document.getElementById("chkEnableImdb250").checked =
-                  config.EnableImdbTop250;
-                document.getElementById("chkEnableNewMovies").checked =
-                  config.EnableNewMovies;
+                tagCheckboxes().forEach(function (el) {
+                  el.checked = config[el.getAttribute("data-setting")] === true;
+                });
                 document.getElementById("txtNewDays").value =
                   config.NewMovieDaysThreshold || 90;
-                document.getElementById("chkEnableJustAdded").checked =
-                  config.EnableJustAdded;
                 document.getElementById("txtAddedDays").value =
                   config.JustAddedDaysThreshold || 30;
-                document.getElementById("chkEnableReturningSeries").checked =
-                  config.EnableReturningSeries;
-                document.getElementById("chkEnableBingeReady").checked =
-                  config.EnableBingeReady;
                 Dashboard.hideLoadingMsg();
               },
             );
@@ -201,26 +252,13 @@
             Dashboard.showLoadingMsg();
             ApiClient.getPluginConfiguration(BtttrTagsConfig.pluginId).then(
               function (config) {
-                config.EnableTrending =
-                  document.getElementById("chkEnableTrending").checked;
-                config.EnableImdbTop250 =
-                  document.getElementById("chkEnableImdb250").checked;
-                config.EnableNewMovies =
-                  document.getElementById("chkEnableNewMovies").checked;
+                tagCheckboxes().forEach(function (el) {
+                  config[el.getAttribute("data-setting")] = el.checked;
+                });
                 config.NewMovieDaysThreshold =
-                  parseInt(document.getElementById("txtNewDays").value, 10) ||
-                  90;
-                config.EnableJustAdded =
-                  document.getElementById("chkEnableJustAdded").checked;
+                  parseInt(document.getElementById("txtNewDays").value, 10) || 90;
                 config.JustAddedDaysThreshold =
-                  parseInt(document.getElementById("txtAddedDays").value, 10) ||
-                  30;
-                config.EnableReturningSeries = document.getElementById(
-                  "chkEnableReturningSeries",
-                ).checked;
-                config.EnableBingeReady = document.getElementById(
-                  "chkEnableBingeReady",
-                ).checked;
+                  parseInt(document.getElementById("txtAddedDays").value, 10) || 30;
 
                 ApiClient.updatePluginConfiguration(
                   BtttrTagsConfig.pluginId,

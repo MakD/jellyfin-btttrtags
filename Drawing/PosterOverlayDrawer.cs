@@ -9,6 +9,8 @@ namespace Jellyfin.Plugin.BtttrTags.Drawing;
 
 public static class PosterOverlayDrawer
 {
+    public const string StyleVersion = "2";
+
     private static SKTypeface? _interTypeface;
     private static readonly object _fontLock = new();
 
@@ -21,12 +23,14 @@ public static class PosterOverlayDrawer
             if (_interTypeface != null) return _interTypeface;
 
             var asm = Assembly.GetExecutingAssembly();
-            using var stream = asm.GetManifestResourceStream("Jellyfin.Plugin.BtttrTags.Resources.Inter-Bold.ttf");
+            using var stream = asm.GetManifestResourceStream("Jellyfin.Plugin.BtttrTags.Resources.Inter-SemiBold.ttf");
             if (stream != null)
             {
                 _interTypeface = SKTypeface.FromStream(stream);
             }
-            _interTypeface ??= SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold);
+            _interTypeface ??= SKTypeface.FromFamilyName(
+                "Arial",
+                new SKFontStyle(SKFontStyleWeight.SemiBold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright));
             return _interTypeface;
         }
     }
@@ -71,7 +75,7 @@ public static class PosterOverlayDrawer
         }
 
         var typeface = GetTypeface();
-        float fontSize = Math.Max(28f, w * 0.072f);
+        float fontSize = w * 0.072f;
         using var font = new SKFont(typeface, fontSize);
 
         font.MeasureText(tag.Text, out var textBounds);
@@ -117,7 +121,10 @@ public static class PosterOverlayDrawer
         })
         {
             float textX = tabX + (tabWidth - textBounds.Width) / 2f - textBounds.Left;
-            float textY = (tabHeight - textBounds.Height) / 2f - textBounds.Top - (fontSize * 0.04f);
+            float capHeight = font.Metrics.CapHeight;
+            float textY = capHeight > 0
+                ? (tabHeight + capHeight) / 2f
+                : (tabHeight - textBounds.Height) / 2f - textBounds.Top;
             canvas.DrawText(tag.Text, textX, textY, font, textPaint);
         }
 

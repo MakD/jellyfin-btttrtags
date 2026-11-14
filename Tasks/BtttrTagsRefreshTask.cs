@@ -113,14 +113,14 @@ public class BtttrTagsRefreshTask : IScheduledTask
         var lines = File.ReadAllLines(hashPath);
         string Line(int index) => lines.Length > index ? lines[index].Trim() : string.Empty;
 
-        var sidecar = new PosterSidecar(Line(0), Line(1), Line(2), Line(3));
+        var sidecar = new PosterSidecar(Line(0), Line(1), Line(2), Line(3), Line(4));
         return sidecar.Hash.Length == 0 && !sidecar.WasInterrupted ? null : sidecar;
     }
 
     private static void WriteSidecar(string hashPath, PosterSidecar sidecar)
     {
         string tempPath = hashPath + ".tmp";
-        File.WriteAllLines(tempPath, new[] { sidecar.Hash, sidecar.Tag, sidecar.Gold, sidecar.PendingHash });
+        File.WriteAllLines(tempPath, new[] { sidecar.Hash, sidecar.Tag, sidecar.Gold, sidecar.PendingHash, sidecar.Style });
         File.Move(tempPath, hashPath, true);
     }
 
@@ -237,7 +237,8 @@ public class BtttrTagsRefreshTask : IScheduledTask
         else if (string.Equals(currentFileHash, sidecar.Hash, StringComparison.OrdinalIgnoreCase))
         {
             if (string.Equals(sidecar.Tag, tag.Text, StringComparison.Ordinal) &&
-                string.Equals(sidecar.Gold, goldText, StringComparison.Ordinal))
+                string.Equals(sidecar.Gold, goldText, StringComparison.Ordinal) &&
+                string.Equals(sidecar.Style, PosterOverlayDrawer.StyleVersion, StringComparison.Ordinal))
             {
                 needsRender = false;
             }
@@ -266,7 +267,7 @@ public class BtttrTagsRefreshTask : IScheduledTask
         }
 
         string newHash = ComputeBytesHash(newPosterBytes);
-        var previous = sidecar ?? new PosterSidecar(string.Empty, string.Empty, string.Empty, string.Empty);
+        var previous = sidecar ?? new PosterSidecar(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
         WriteSidecar(hashPath, previous with { PendingHash = newHash });
 
         using (var mem = new MemoryStream(newPosterBytes))
@@ -274,7 +275,7 @@ public class BtttrTagsRefreshTask : IScheduledTask
             await SavePosterAsync(item, mem, "image/jpeg").ConfigureAwait(false);
         }
 
-        WriteSidecar(hashPath, new PosterSidecar(newHash, tag.Text, goldText, string.Empty));
+        WriteSidecar(hashPath, new PosterSidecar(newHash, tag.Text, goldText, string.Empty, PosterOverlayDrawer.StyleVersion));
 
         _logger.LogInformation("BtttrTags: [{Name}] ({ItemId}) -> Applied tag '{Tag}' (cache busted).", item.Name, itemId, tag.Text);
     }
@@ -305,7 +306,7 @@ public class BtttrTagsRefreshTask : IScheduledTask
 
         if (shouldRestore)
         {
-            var previous = sidecar ?? new PosterSidecar(string.Empty, string.Empty, string.Empty, string.Empty);
+            var previous = sidecar ?? new PosterSidecar(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
             WriteSidecar(hashPath, previous with { PendingHash = ComputeFileHash(backupPath) });
 
             string mimeType = DetectImageMimeType(backupPath);
@@ -406,7 +407,7 @@ public class BtttrTagsRefreshTask : IScheduledTask
         }
     }
 
-    private sealed record PosterSidecar(string Hash, string Tag, string Gold, string PendingHash)
+    private sealed record PosterSidecar(string Hash, string Tag, string Gold, string PendingHash, string Style)
     {
         public bool WasInterrupted => PendingHash.Length > 0;
     }

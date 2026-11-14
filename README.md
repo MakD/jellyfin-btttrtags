@@ -14,8 +14,8 @@ Your original posters are backed up before a tag is added, and restored automati
 
 ## Features
 
-- Tags for top-rated, trending, new and recently added titles, and for the status of TV series.
-- Tag colors are taken from each poster's artwork. IMDb Top 250 titles get a gold tag.
+- Tags for top-rated, trending, award-winning, new and recently added titles, and for the status of TV series.
+- Tag colors are taken from each poster's artwork. IMDb Top 250 titles and award winners get a gold tag.
 - Original posters are backed up and restored without loss of quality. Every render starts from the clean original, so repeated updates never degrade the image.
 - Posters you replace yourself are detected and kept. The plugin backs up your new poster and tags that instead.
 - Runs automatically every day, and can be run on demand from the dashboard.
@@ -23,23 +23,33 @@ Your original posters are backed up before a tag is added, and restored automati
 
 ## Tags
 
-Each title gets at most one tag. When several apply, the first one in this table wins.
+Each title gets at most one tag. When several apply, the first one in this table wins. Tags that expire (trending, new, just added) come first, so they are never hidden by a permanent tag. Once they run out, the permanent tag shows.
 
 | Tag | Applies to | When |
 |---|---|---|
-| `IMDb #N` | Movies and series | The title is in the IMDb Top 250. Movies and series are ranked separately. |
 | `#N Today` or `Trending` | Movies and series | The title is in the current Cinemeta trending chart. The top 25 show their rank. |
 | `New Movie` or `New Series` | Movies and series | Released within the last 90 days, or due out within the next 30. |
 | `Just Added` | Movies and series | Added to your library within the last 30 days. |
+| `IMDb #N` | Movies and series | The title is in the IMDb Top 250. Movies and series are ranked separately. |
+| `Oscar Winner`, `Emmy Winner`, `Palme d'Or`, `Golden Lion`, `Golden Bear`, `BAFTA Winner`, `Globe Winner`, `National Award`, `Filmfare Winner` | Movies and series | The title won the award. Shown in gold. |
+| `Oscar Nominee`, `Emmy Nominee`, `Cannes Nominee`, `Venice Nominee`, `Berlin Nominee`, `BAFTA Nominee`, `Globe Nominee`, `Filmfare Nominee` | Movies and series | The title was nominated for the award. |
 | `Returning Series` | Series | The series is still airing. |
 | `Binge Ready` | Series | The series has ended. |
 
 Matching uses the IMDb ID in each item's metadata. Titles without an IMDb ID can still receive the New, Just Added and series status tags.
 
+### Award tags
+
+Award data comes from [Wikidata](https://www.wikidata.org) and is refreshed weekly. A win at any award outranks a nomination at any other. When a title has several wins, the first one in the tag table is shown.
+
+Only awards that honour the title itself count: best film or series, and craft awards such as cinematography, score, editing or visual effects. Acting, directing and writing awards are not used.
+
+Wikidata is edited by volunteers, so coverage varies. Oscars are well covered. Emmys, the Golden Globes and the Indian awards are less complete, so some titles that won or were nominated will not be tagged.
+
 ## Requirements
 
 - Jellyfin Server 12.0 or later.
-- Outbound internet access from the server, to download the IMDb Top 250 and trending lists.
+- Outbound internet access from the server, to download the IMDb Top 250, trending and award lists.
 
 ## Installation
 
@@ -56,7 +66,7 @@ Matching uses the IMDb ID in each item's metadata. Titles without an IMDb ID can
 ### Manual installation
 
 1. Download `BtttrTags.zip` from the [latest release](https://github.com/MakD/jellyfin-btttrtags/releases/latest).
-2. Extract `Jellyfin.Plugin.BtttrTags.dll` into a new folder named `BtttrTags_1.0.0.0` inside your Jellyfin `plugins` directory.
+2. Extract `Jellyfin.Plugin.BtttrTags.dll` into a new folder named `BtttrTags_1.0.1.0` inside your Jellyfin `plugins` directory.
 3. Restart Jellyfin.
 
 ## Usage
@@ -69,15 +79,14 @@ To tag your library straight away, open **Dashboard**, then **Scheduled Tasks**,
 
 Open **Dashboard**, then **Plugins**, then **BtttrTags**.
 
+Every tag in the table under [Tags](#tags) has its own switch, all on by default, so you can turn off any single tag. Each award has separate switches for its winner and nominee tags. The page lists the tags in priority order.
+
+If you turn off `#N Today` but leave `Trending` on, the top 25 show `Trending`. If you turn off an award's winner tag but leave its nominee tag on, winners show the nominee tag, since every winner was also nominated.
+
 | Setting | Default | Description |
 |---|---|---|
-| Enable Trending Tags | On | Shows `#N Today` or `Trending` for titles in the Cinemeta trending charts. |
-| Enable IMDb Top 250 | On | Shows a gold `IMDb #N` tag for top-rated movies and shows. |
-| Enable New Movie / New Series | On | Tags recent releases. |
 | New Release Threshold (Days) | 90 | How long after release a title counts as new. |
-| Enable Just Added | On | Tags titles recently added to your library. |
 | Just Added Threshold (Days) | 30 | How long after being added a title counts as just added. |
-| Enable TV Status Tags | On | Shows `Returning Series` or `Binge Ready` on series. |
 
 Changes take effect on the next run of the scheduled task. Turning a tag type off restores the original posters of titles that no longer get a tag.
 
