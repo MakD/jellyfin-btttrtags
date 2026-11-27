@@ -66,7 +66,7 @@ Wikidata is edited by volunteers, so coverage varies. Oscars are well covered. E
 ### Manual installation
 
 1. Download `BtttrTags.zip` from the [latest release](https://github.com/MakD/jellyfin-btttrtags/releases/latest).
-2. Extract `Jellyfin.Plugin.BtttrTags.dll` into a new folder named `BtttrTags_1.0.1.0` inside your Jellyfin `plugins` directory.
+2. Extract `Jellyfin.Plugin.BtttrTags.dll` into a new folder named `BtttrTags_1.0.1.1` inside your Jellyfin `plugins` directory.
 3. Restart Jellyfin.
 
 ## Usage
