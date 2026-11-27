@@ -9,7 +9,7 @@ namespace Jellyfin.Plugin.BtttrTags.Drawing;
 
 public static class PosterOverlayDrawer
 {
-    public const string StyleVersion = "2";
+    public const string StyleVersion = "3";
 
     private static SKTypeface? _interTypeface;
     private static readonly object _fontLock = new();
@@ -75,7 +75,8 @@ public static class PosterOverlayDrawer
         }
 
         var typeface = GetTypeface();
-        float fontSize = w * 0.072f;
+        float visibleWidth = Math.Min(w, h * 2f / 3f);
+        float fontSize = visibleWidth * 0.072f;
         using var font = new SKFont(typeface, fontSize);
 
         font.MeasureText(tag.Text, out var textBounds);
